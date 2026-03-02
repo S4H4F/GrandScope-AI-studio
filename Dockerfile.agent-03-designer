@@ -1,0 +1,16 @@
+# Dockerfile for OC Designer
+FROM node:20
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN npm install -g openclaw-cli
+
+WORKDIR /app
+
+COPY agents/oc-designer/ ./agents/oc-designer/
+COPY shared/ ./shared/
+COPY package*.json ./
+
+RUN npm install --production
+
+CMD ["node", "agents/oc-designer/index.js"]

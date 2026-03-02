@@ -1,0 +1,25 @@
+# Use Python 3.12 for Content Writer
+FROM python:3.12
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install Node.js 20 and common build tools
+RUN apt-get update && apt-get install -y \
+    curl \
+    git \
+    build-essential \
+    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install -g openclaw-cli \
+    && pip install redis python-dotenv \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY agents/oc-writer/ ./agents/oc-writer/
+COPY shared/ ./shared/
+
+# Placeholder for python dependencies
+# RUN pip install -r agents/oc-writer/requirements.txt
+
+CMD ["python", "agents/oc-writer/main.py"]

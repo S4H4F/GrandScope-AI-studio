@@ -1,0 +1,94 @@
+services:
+  # Internal Message Bus
+  redis:
+    image: redis:alpine
+    command: redis-server --requirepass ${REDIS_PASSWORD:-password}
+    networks:
+      - design_net
+      - dev_net
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Design Team (OC)
+  agent-01-oc-monitor:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent-01-monitor
+    env_file: .env
+    depends_on:
+      - redis
+    networks:
+      - design_net
+    volumes:
+      - ./outputs/reports:/outputs/reports
+
+  agent-02-oc-writer:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent-02-writer
+    env_file: .env
+    depends_on:
+      - redis
+    networks:
+      - design_net
+    volumes:
+      - ./outputs/content:/outputs/content
+
+  agent-03-oc-designer:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent-03-designer
+    env_file: .env
+    depends_on:
+      - redis
+    networks:
+      - design_net
+    volumes:
+      - ./outputs/design:/outputs/design
+
+  # Web Dev Team (CC)
+  agent-06-cc-monitor:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent-06-qa
+    env_file: .env
+    depends_on:
+      - redis
+    networks:
+      - dev_net
+    volumes:
+      - ./outputs/reports:/outputs/reports
+
+  agent-04-cc-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent-04-frontend
+    env_file: .env
+    depends_on:
+      - redis
+    networks:
+      - dev_net
+    volumes:
+      - ./outputs/code:/outputs/code
+
+  agent-05-cc-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.agent-05-backend
+    env_file: .env
+    depends_on:
+      - redis
+    networks:
+      - dev_net
+    volumes:
+      - ./outputs/code:/outputs/code
+
+networks:
+  # Strict Communication Sios
+  design_net:
+    internal: false # Needs outbound for Telegram & AI APIs
+  dev_net:
+    internal: false # Needs outbound for Telegram & AI APIs
