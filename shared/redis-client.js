@@ -6,7 +6,7 @@ const redis = require('redis');
 class GrandScopeBus {
     constructor() {
         this.client = redis.createClient({
-            url: process.env.REDIS_URL || 'redis://redis:6379',
+            url: process.env.REDIS_URL || 'redis://127.0.0.1:6379',
             password: process.env.REDIS_PASSWORD
         });
 

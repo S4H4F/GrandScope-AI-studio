@@ -34,7 +34,7 @@ def process_task(task):
 
 def main():
     print("--- OC Content Writer Starting ---")
-    redis_url = os.getenv('REDIS_URL', 'redis://redis:6379')
+    redis_url = os.getenv('REDIS_URL', 'redis://127.0.0.1:6379')
     r = redis.from_url(redis_url, decode_responses=True)
     
     print(f"Connected to Redis at {redis_url}")

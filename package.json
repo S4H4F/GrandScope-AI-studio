@@ -4,7 +4,7 @@
     "description": "Shared dependencies for GrandScope AI agents",
     "private": true,
     "dependencies": {
-        "redis": "^4.6.13",
-        "dotenv": "^16.4.5"
+        "dotenv": "^16.6.1",
+        "redis": "^4.7.1"
     }
 }
